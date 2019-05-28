@@ -9,3 +9,10 @@ class Article(models.Model):
 
     def __str__(self):
         return "{} - {}".format(self.title, self.published_date)
+
+class Topic(models.Model):
+  name = models.CharField(max_length=255)
+  topic = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='topics')
+
+  def _str_(self):
+    return f'{self.name}'

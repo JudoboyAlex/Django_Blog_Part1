@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from blog.models import Article
 from datetime import date
@@ -11,5 +11,13 @@ def home_page(request):
     response = render(request, 'index.html', context)
     return HttpResponse(response)
 
+def root_path(request):
+    return HttpResponseRedirect('/home')
+
+def blog_display(request, id):
+    blog = Article.objects.get(pk=id)
+    context = {'blog': blog}
+    response = render(request, 'blog.html', context)
+    return HttpResponse(response)
 
    
