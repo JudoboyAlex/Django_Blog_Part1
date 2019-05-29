@@ -11,8 +11,6 @@
   <body>
     {% block content %}
     <p>
-      
-
       {% for article in articles %}
       <div class="alert alert-primary" role="alert">
       <a href="{% url 'blog_details' id=article.pk %}" class="alert-link">
