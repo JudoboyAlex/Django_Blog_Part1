@@ -9,13 +9,15 @@
   <body>
     <h1>{{ blog.title }}</h1>
     <p>{{ blog.body }}</p>
+    
+     
 
     <form action="{% url 'create_comment' %}" method="post">
       {% csrf_token %}
 
       <label for="name">Name</label>
       <input type="text" name="name" />
-      <input type="hidden" name="blog_id" value="{{ blog.id }}" />
+      <input type="hidden" name="blog_comment" value="{{ blog.id }}" />
 
       <label for="message">Comment</label>
       <textarea rows="4" cols="50" name="message"></textarea>
