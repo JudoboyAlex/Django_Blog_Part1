@@ -22,6 +22,15 @@
     <a href="{% url 'articles' %}"><span class="glyphicon glyphicon-plus"></span></a>
     <h1>Welcome to My Blog!</h1>
     <p class="badge badge-pill badge-success">Today is {{ date }}</p>
+
+    {% if request.user.is_authenticated %}
+    <!-- display link to log out -->
+    <a href="{% url 'logout' %}"> Log Out </a>
+
+  {% else %}
+    <!-- display link to login page -->
+    <a href="{% url 'login' %}"> Log In </a>
+  {% endif %}
     {% block content %} {% endblock %}
   </body>
 </html>
