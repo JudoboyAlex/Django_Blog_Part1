@@ -15,6 +15,7 @@
       integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
       crossorigin="anonymous"
     />
+    
     <link rel="stylesheet" href="{% static 'css/styles.css' %}"/>
     <title>Blog Home</title>
   </head>
@@ -25,12 +26,14 @@
 
     {% if request.user.is_authenticated %}
     <!-- display link to log out -->
-    <a href="{% url 'logout' %}"> Log Out </a>
-
+    
+    <a class="btn btn-warning" href="{% url 'logout' %}" role="button">Log Out</a>
   {% else %}
     <!-- display link to login page -->
-    <a href="{% url 'login' %}"> Log In </a>
+    <a class="btn btn-primary" href="{% url 'login' %}" role="button">Log In</a>
+    
   {% endif %}
+  
     {% block content %} {% endblock %}
   </body>
 </html>

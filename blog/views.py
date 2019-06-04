@@ -1,5 +1,5 @@
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect, reverse, get_object_or_404
 from datetime import date
 from django.views.decorators.http import require_http_methods
 from blog.forms import CommentForm, LoginForm, ArticleForm
@@ -11,7 +11,7 @@ from django.utils import timezone
 
 def home_page(request):
     current_date = date.today()
-    context = {'articles': Article.objects.filter(draft=False).order_by('-published_date'),
+    context = {'articles': Article.objects.filter(draft=True).order_by('-published_date'),
                'date': current_date 
                 }
     response = render(request, 'index.html', context)
@@ -92,17 +92,28 @@ def signup(request):
     html_response =  render(request, 'signup.html', {'form': form})
     return HttpResponse(html_response)
 
-def submit_article(request):
-    if request.method == 'POST':
-        form = ArticleForm(request.POST)
+def blog_edit_view(request, id):
+    obj = get_object_or_404(Article, id = id)
+    if request.method == "POST":
+        form = ArticleForm(request.POST, instance= obj)
         if form.is_valid():
-            article = form.save(commit=False)
-            article.user = request.user 
-            article.published_date = timezone.now()
-            article.save()
-            return redirect("blog_details", id=article.id)
+            obj = form.save(commit=False)
+            obj.published_date = timezone.now()
+            obj.save()
+            # template_name = 'post_edit.html'
+            # context = {"title": f"Updated {obj.title} at {obj.published_date}", "form": form}
+            # return render(request, template_name, context)
+            return redirect('blog_details', id=obj.id)
     else:
-        form = ArticleForm()
-        context = { 'form': form}
-        response = render(request, 'new_article.html', context)
-        return HttpResponse(response)
+        form = ArticleForm(instance=obj)
+        current_date = date.today()
+    return render(request, 'update.html', {'form':form, 'date': current_date  })
+
+def blog_delete_view(request, id):
+    obj = get_object_or_404(Article, id=id)
+    template_name = 'delete.html'
+    if request.method == "POST":
+        obj.delete()
+        return redirect("home")
+    context={"object": obj}
+    return render(request, template_name, context)
