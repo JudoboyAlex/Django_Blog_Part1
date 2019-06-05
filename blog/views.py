@@ -8,6 +8,7 @@ from blog.models import Article, Comment
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 
 def home_page(request):
     current_date = date.today()
@@ -34,6 +35,7 @@ def create_comment(request):
     Comment.objects.create(name=user_name, message= user_message, blog_comment= blog )   
     return redirect('blog_details', id=blog_id)
 
+@login_required
 def article(request):
     # Create Article
     current_date = date.today()
@@ -55,6 +57,8 @@ def article(request):
         return render(request, 'post_edit.html', {'form':form, 'date': current_date})
 
 def login_view(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect('/home')
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -78,6 +82,8 @@ def logout_view(request):
     return HttpResponseRedirect('/home')
 
 def signup(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect('/home')
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
@@ -92,6 +98,7 @@ def signup(request):
     html_response =  render(request, 'signup.html', {'form': form})
     return HttpResponse(html_response)
 
+@login_required
 def blog_edit_view(request, id):
     obj = get_object_or_404(Article, id = id)
     if request.method == "POST":
